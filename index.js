@@ -44,7 +44,6 @@ rtm.on('ready', async () => {
 
 //listen for sub_presence event
 rtm.on('presence_change', async (event) => {
-  console.log(event);
   switch (event.presence) {
     case 'away': {
       setDnd(7200);
@@ -59,7 +58,7 @@ rtm.on('presence_change', async (event) => {
 });
 
 app.get('/keepalive', (req, res) => {
-    res.status(200).send('hi there, i\'m alive - how are you?');
+    res.status(200).send('Hi! I\'m awake');
 })
 
 app.listen((process.env.PORT || 3000), async () => {
