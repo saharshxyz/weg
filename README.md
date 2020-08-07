@@ -1,4 +1,4 @@
-# away-pause
+# away-pause [![Run on Repl.it](https://repl.it/badge/github/saharshy29/away-pause)](https://repl.it/github/saharshy29/away-pause)
 
 A slack app that turns off DND when you go online and turns on DND when you go online
 
