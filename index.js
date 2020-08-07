@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const { WebClient } = require('@slack/web-api');
 const { RTMClient } = require('@slack/rtm-api');
-const app = require('express')();
+const express = require('express');
+const app = express();
 
 const USER_OAUTH_TOKEN = process.env.USER_OAUTH_TOKEN;
 const BOT_OAUTH_TOKEN = process.env.BOT_OAUTH_TOKEN;
@@ -65,11 +66,12 @@ rtm.on('presence_change', async (event) => {
       break;
     }
   }
-  console.log('Changed Successful ✅');
+  console.log('Successful Change ✅');
 });
 
-app.get('/keepalive', (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send("Hi! I'm awake");
+  log('Pinged 🤖');
 });
 
 app.listen(process.env.PORT || 3000, async () => {
@@ -82,4 +84,8 @@ app.listen(process.env.PORT || 3000, async () => {
     console.error(err);
     log('THERE WAS AN ERROR WITH THE EXPRESS SERVER 🚨');
   }
+});
+
+process.on('SIGINT' || 'SIGTERM', () => {
+  log('Down 🔴');
 });
