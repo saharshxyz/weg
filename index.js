@@ -7,6 +7,7 @@ const app = require('express')();
 const USER_OAUTH_TOKEN = process.env.USER_OAUTH_TOKEN;
 const BOT_OAUTH_TOKEN = process.env.BOT_OAUTH_TOKEN;
 const USER_ID = process.env.USER_ID;
+const CHANNEL_ID = process.env.ADMIN_CHANNEL_ID;
 
 //initialize web client as user
 const client = new WebClient(USER_OAUTH_TOKEN);
@@ -17,16 +18,25 @@ const addUserSubscription = async () => {
   await rtm.subscribePresence([USER_ID]);
 };
 
+const log = async (msg) => {
+  console.log(msg);
+  await client.chat.postMessage({
+    token: BOT_OAUTH_TOKEN,
+    text: msg,
+    channel: CHANNEL_ID,
+  });
+};
+
 const setDnd = async (time) => {
-  // console.log('Starting DND change');
+  console.log('Starting DND change');
   if (time > 1) {
-    console.log('Turning on DND 🔕');
+    log('Turning on DND 🔕');
     return await client.dnd.setSnooze({
       token: USER_OAUTH_TOKEN,
       num_minutes: time,
     });
   } else if (time == 0) {
-    console.log('Turning off DND 🔔');
+    log('Turning off DND 🔔');
     return await client.dnd.endDnd({
       token: USER_OAUTH_TOKEN,
     });
@@ -35,10 +45,11 @@ const setDnd = async (time) => {
 
 rtm.on('ready', async () => {
   try {
-    console.log('Starting 🏁');
+    log('Starting App 🟢');
     await addUserSubscription();
   } catch (err) {
     console.error(err);
+    log('THERE WAS AN ERROR STARTING THE APP 🚨');
   }
 });
 
@@ -54,17 +65,21 @@ rtm.on('presence_change', async (event) => {
       break;
     }
   }
-  // console.log('Changed Successful ✅');
+  console.log('Changed Successful ✅');
 });
 
 app.get('/keepalive', (req, res) => {
-    res.status(200).send('Hi! I\'m awake');
-})
+  res.status(200).send("Hi! I'm awake");
+});
 
-app.listen((process.env.PORT || 3000), async () => {
-    try {
-    console.log('Starting express server 🟢');
+app.listen(process.env.PORT || 3000, async () => {
+  try {
+    console.log('Starting express server 🏁');
     await rtm.start({
-        token: BOT_OAUTH_TOKEN
-    }); } catch (err) { console.error(err); }
-})
+      token: BOT_OAUTH_TOKEN,
+    });
+  } catch (err) {
+    console.error(err);
+    log('THERE WAS AN ERROR WITH THE EXPRESS SERVER 🚨');
+  }
+});
