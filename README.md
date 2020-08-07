@@ -14,3 +14,6 @@ USER_ID=
 ```
 
 Run `npm i` to install the packages, then `npm start` and app should be working!
+
+
+Special thanks to [@lukec11](https://lukec.me) for help on the app.
